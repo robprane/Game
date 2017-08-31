@@ -154,7 +154,6 @@ public class GameView extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent motionEvent) {
         motionX = motionEvent.getX();
         motionY = motionEvent.getY();
-        Log.d(TAG, Integer.toString(motionEvent.getActionMasked()));
         Log.d(TAG, motionEvent.toString());
 
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
