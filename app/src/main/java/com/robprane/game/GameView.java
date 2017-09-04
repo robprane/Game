@@ -40,11 +40,8 @@ public class GameView extends SurfaceView implements Runnable {
     int ScreenX;
     int ScreenY;
 
-    private static final int FADE_MILLISECONDS = 500; // 0.5 second fade effect
-    private static final int STEP = 17;          // 17ms refresh
-
     // Calculate our alpha step from our fade parameters
-    private static final int ALPHA_STEP = 255 / (FADE_MILLISECONDS / STEP);
+    private static final int ALPHA_STEP = 255 / (R.integer.fade_time / R.integer.step);
 
     // Need to keep track of the current alpha value
     private int currentAlpha = 255;

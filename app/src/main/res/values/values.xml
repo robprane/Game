@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="fade_time">500</integer>
+    <integer name="step">17</integer>
+
+</resources>
