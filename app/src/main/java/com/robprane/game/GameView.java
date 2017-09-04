@@ -40,6 +40,15 @@ public class GameView extends SurfaceView implements Runnable {
     int ScreenX;
     int ScreenY;
 
+    private static final int FADE_MILLISECONDS = 500; // 0.5 second fade effect
+    private static final int STEP = 17;          // 17ms refresh
+
+    // Calculate our alpha step from our fade parameters
+    private static final int ALPHA_STEP = 255 / (FADE_MILLISECONDS / STEP);
+
+    // Need to keep track of the current alpha value
+    private int currentAlpha = 255;
+
     //Adding an stars list
     private ArrayList<Star> stars = new
             ArrayList<Star>();
@@ -72,9 +81,6 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public void run() {
         while (playing) {
-            if (showsplash) {
-                timeshowsplash++;
-            }
             update();
             draw();
             control();
@@ -91,13 +97,19 @@ public class GameView extends SurfaceView implements Runnable {
             for (Star s : stars) {
                 s.update(player.getSpeed());
             }
+
+            currentAlpha -= ALPHA_STEP;
+
+            if (currentAlpha <= 0) {
+                currentAlpha = 255;
+            }
         }
     }
 
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
-            if (showsplash) {
+            if (false) {
                 canvas.drawColor(Color.WHITE);
 
                 paint.setColor(Color.BLACK);
@@ -106,10 +118,12 @@ public class GameView extends SurfaceView implements Runnable {
 
                 canvas.drawBitmap(splash.getBitmap(), splash.getX(), splash.getY(), paint);
             } else {
+
                 canvas.drawColor(Color.BLACK);
 
                 //setting the paint color to white to draw the stars
-                paint.setColor(Color.WHITE);
+
+                paint.setARGB(currentAlpha, 255, 255, 255);
 
                 //drawing all stars
                 for (Star s : stars) {
@@ -130,7 +144,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void control() {
         try {
-            gameThread.sleep(10);
+            gameThread.sleep(STEP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
