@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="fade_time">500</integer>
-    <integer name="step">17</integer>
+    <!-- TRUE for PORTRAIT MODE, FALSE for LANDSCAPE MODE -->
+    <bool name="portrait">true</bool>
+
+    <!-- Splash: enabled and time -->
+    <bool name="splash_enabled">true</bool>
+    <integer name="splash_time">3000</integer>
+
+    <integer name="fade_time">400</integer>
+    <integer name="step">20</integer>
 
 </resources>

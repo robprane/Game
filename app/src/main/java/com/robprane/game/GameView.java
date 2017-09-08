@@ -1,6 +1,7 @@
 package com.robprane.game;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
@@ -24,8 +25,6 @@ public class GameView extends SurfaceView implements Runnable {
     private static final String TAG = "Logs";
 
     volatile boolean playing;
-    private boolean showsplash = false;
-    private int timeshowsplash;
     private Thread gameThread = null;
     private Player player;
     private Splash splash;
@@ -40,11 +39,12 @@ public class GameView extends SurfaceView implements Runnable {
     int ScreenX;
     int ScreenY;
 
-    // Calculate our alpha step from our fade parameters
-    private static final int ALPHA_STEP = 255 / (R.integer.fade_time / R.integer.step);
+    float ALPHA_STEP;
+
+    int STEP;
 
     // Need to keep track of the current alpha value
-    private int currentAlpha = 255;
+    private int currentAlpha = 0;
 
     //Adding an stars list
     private ArrayList<Star> stars = new
@@ -57,10 +57,14 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context, int screenX, int screenY) {
         super(context);
 
+        STEP = getResources().getInteger(R.integer.step);
+
+        ALPHA_STEP = 256 / (getResources().getInteger(R.integer.fade_time) / getResources().getInteger(R.integer.step));
+
         ScreenX = screenX;
         ScreenY = screenY;
 
-        splash = new Splash(context, screenX, screenY);
+        splash = new Splash(getResources().getBoolean(R.bool.portrait), context, Math.max(screenX, screenY), Math.min(screenX, screenY));
 
         player = new Player(context, screenX, screenY);
 
@@ -73,6 +77,8 @@ public class GameView extends SurfaceView implements Runnable {
             Star s  = new Star(screenX, screenY);
             stars.add(s);
         }
+
+        fadein();
     }
 
     @Override
@@ -85,38 +91,53 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-        if (showsplash) {
-            splash.update(timeshowsplash);
+        if (splash.enabled()) {
+            if (splash.getTime() >= getResources().getInteger(R.integer.fade_time)) {
+                if (splash.getTime() >= getResources().getInteger(R.integer.splash_time) - getResources().getInteger(R.integer.fade_time)) {
+                    fadein();
+                }
+                splash.setTime(splash.getTime() - STEP);
+            } else {
+                fadeout();
+                if (currentAlpha <= ALPHA_STEP) {
+                    splash.setEnable(false);
+                }
+            }
         } else {
+            fadein();
             player.update();
 
             //Updating the stars with player speed
             for (Star s : stars) {
                 s.update(player.getSpeed());
             }
+        }
+    }
 
+    private void fadeout() {
+        if (currentAlpha >= ALPHA_STEP) {
             currentAlpha -= ALPHA_STEP;
+        }
+    }
 
-            if (currentAlpha <= 0) {
-                currentAlpha = 255;
-            }
+    private void fadein() {
+        if (currentAlpha <= 255 - ALPHA_STEP) {
+            currentAlpha += ALPHA_STEP;
         }
     }
 
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
-            if (false) {
+            if (splash.enabled()) {
                 canvas.drawColor(Color.WHITE);
 
-                paint.setColor(Color.BLACK);
-
-                paint.setTextSize(50);
+                paint.setARGB(currentAlpha, 255, 255, 255);
 
                 canvas.drawBitmap(splash.getBitmap(), splash.getX(), splash.getY(), paint);
             } else {
 
-                canvas.drawColor(Color.BLACK);
+                canvas.drawColor(Color.WHITE);
 
                 //setting the paint color to white to draw the stars
 
