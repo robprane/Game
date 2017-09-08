@@ -11,6 +11,8 @@ public class Field {
 
     public Field(int screenX, int screenY) {
 
+
+
     }
 
     public void update(int playerSpeed) {
