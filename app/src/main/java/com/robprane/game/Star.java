@@ -2,49 +2,32 @@ package com.robprane.game;
 
 import java.util.Random;
 
-/**
- * Created by wakeapp on 29.08.17.
- */
-
-public class Star {
+class Star {
     private int x;
     private int y;
     private int speed;
 
     private int maxX;
     private int maxY;
-    private int minX;
-    private int minY;
 
-
-
-    public Star(int screenX, int screenY) {
+    Star(int screenX, int screenY) {
         maxX = screenX;
         maxY = screenY;
-        minX = 0;
-        minY = 0;
         Random generator = new Random();
         speed = generator.nextInt(10);
 
-        //generating a random coordinate
-        //but keeping the coordinate inside the screen size
         x = generator.nextInt(maxX);
         y = generator.nextInt(maxY);
     }
 
-    public void update(boolean boosting, int playerSpeed) {
-        //animating the star horizontally left side
-        //by decreasing x coordinate with player speed
+    void update(boolean boosting, int playerSpeed) {
         if (boosting) {
             speed += playerSpeed / 10;
             x -= speed;
         } else {
             x -= setSpeed(playerSpeed);
         }
-        //if the star reached the left edge of the screen
         if (x < 0) {
-            //again starting the star from right edge
-            //this will give a infinite scrolling background effect
             Random generator = new Random();
             x = maxX + generator.nextInt(maxX / 2);
             y = generator.nextInt(maxY);
@@ -52,29 +35,26 @@ public class Star {
         }
     }
 
-    public float getStarWidth() {
-        //Making the star width random so that
-        //it will give a real look
+    float getStarWidth() {
         float minX = 1.0f;
         float maxX = 4.0f;
         Random rand = new Random();
-        float finalX = rand.nextFloat() * (maxX - minX) + minX;
-        return finalX;
+        return rand.nextFloat() * (maxX - minX) + minX;
     }
 
-    public float setSpeed(int playerSpeed) {
+    private float setSpeed(int playerSpeed) {
         return speed + playerSpeed;
     }
 
-    public float getSpeed() {
+    float getSpeed() {
         return speed;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 }

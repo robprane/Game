@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-/**
- * Created by wakeapp on 08.09.17.
- */
-
 public class Field {
     private Bitmap bitmap;
 

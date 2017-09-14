@@ -1,57 +1,38 @@
 package com.robprane.game;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.v4.view.GestureDetectorCompat;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-import java.util.Random;
-import android.os.Handler;
-import android.widget.Toast;
-
-import java.util.logging.LogRecord;
+import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-/**
- * Created by wakeapp on 29.08.17.
- */
-
 public class GameView extends SurfaceView implements Runnable {
+
+    // ~~~~~~~~~~ Create game ~~~~~~~~~~
+
+    int ScreenX;
+    int ScreenY;
 
     volatile boolean playing = true;
     private Thread gameThread = new Thread(this);
     private Player player;
     private Splash splash;
 
-    private Paint paint;
-    private Canvas canvas;
-    private SurfaceHolder surfaceHolder;
-
-    int ScreenX;
-    int ScreenY;
-
-    float ALPHA_STEP;
-
-    long STEP;
-
-    long FADE_TIME;
-
-    private int currentAlpha = 0;
-
     private ArrayList<Star> stars = new
             ArrayList<Star>();
+
+//    private Bitmap bitmap;
+//    private Bitmap src;
 
     public GameView(Context context, int screenX, int screenY) {
 
@@ -69,6 +50,8 @@ public class GameView extends SurfaceView implements Runnable {
 
         ALPHA_STEP = 256 / (FADE_TIME / STEP);
 
+        SPLASH_TIME = getResources().getInteger(R.integer.splash_time);
+
         ScreenX = screenX;
         ScreenY = screenY;
 
@@ -84,6 +67,9 @@ public class GameView extends SurfaceView implements Runnable {
             Star s = new Star(screenX, screenY);
             stars.add(s);
         }
+
+//        src = BitmapFactory.decodeResource(this.getResources(), R.drawable.brick_tile);
+//        bitmap = Bitmap.createScaledBitmap(src, 300, 300, false);
 
         fadein();
     }
@@ -110,10 +96,15 @@ public class GameView extends SurfaceView implements Runnable {
 
     // ~~~~~~~~~~ Update game data ~~~~~~~~~~
 
+    float ALPHA_STEP;
+    long STEP;
+    long FADE_TIME;
+    long SPLASH_TIME;
+
     private void update() {
         if (splash.enabled()) { // All about splash of the application
-            if (splash.getTime() >= getResources().getInteger(R.integer.fade_time)) {
-                if (splash.getTime() >= getResources().getInteger(R.integer.splash_time) - getResources().getInteger(R.integer.fade_time)) {
+            if (splash.getTime() >= FADE_TIME) {
+                if (splash.getTime() >= SPLASH_TIME - FADE_TIME) {
                     fadein();
                 }
                 splash.setTime(splash.getTime() - (int) STEP);
@@ -135,6 +126,8 @@ public class GameView extends SurfaceView implements Runnable {
 
     // ~~~~~~~~~~ Fade in and fade out animations ~~~~~~~~~~
 
+    private int currentAlpha = 0;
+
     private void fadeout() {
         if (currentAlpha >= ALPHA_STEP) {
             currentAlpha -= ALPHA_STEP;
@@ -149,9 +142,12 @@ public class GameView extends SurfaceView implements Runnable {
 
     // ~~~~~~~~~~ Draw game ~~~~~~~~~~
 
+    private Paint paint;
+    private SurfaceHolder surfaceHolder;
+
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
-            canvas = surfaceHolder.lockCanvas();
+            Canvas canvas = surfaceHolder.lockCanvas();
             if (splash.enabled()) {
                 canvas.drawColor(Color.BLACK);
                 paint.setARGB(currentAlpha, 255, 255, 255);
@@ -174,6 +170,17 @@ public class GameView extends SurfaceView implements Runnable {
                         player.getY(),
                         paint);
 
+//                paint.setColor(Color.argb(255, 119, 61, 66));
+//                canvas.drawRect(0, 0, 300, 300, paint);
+//                canvas.drawRect(300, 300, 600, 600, paint);
+//                paint.setColor(Color.argb(255, 60, 92, 119));
+//                canvas.drawRect(0, 300, 300, 600, paint);
+//                canvas.drawRect(300, 0, 600, 300, paint);
+//                canvas.drawBitmap(bitmap, 0, 0, paint);
+//                canvas.drawBitmap(bitmap, 0, 300, paint);
+//                canvas.drawBitmap(bitmap, 300, 0, paint);
+//                canvas.drawBitmap(bitmap, 300, 300, paint);
+
             }
             drawFps(canvas);
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -186,7 +193,7 @@ public class GameView extends SurfaceView implements Runnable {
         playing = false;
         try {
             gameThread.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -256,7 +263,7 @@ public class GameView extends SurfaceView implements Runnable {
         long currTime = System.currentTimeMillis();
         if (fpsLastTime != 0) {
             int fps = (int) (1000 / (currTime - fpsLastTime));
-            canvas.drawText(String.format("fps:%d", fps), fpsRect.centerX(), fpsRect.centerY(), fpsPaint);
+            canvas.drawText(Integer.toString(fps), fpsRect.centerX(), fpsRect.centerY(), fpsPaint);
         }
         fpsLastTime = currTime;
     }

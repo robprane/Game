@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-/**
- * Created by wakeapp on 29.08.17.
- */
-
 public class Splash {
     private Bitmap bitmap;
     private int x;
@@ -33,27 +29,27 @@ public class Splash {
         //
     }
 
-    public void setTime(int time) {
+    void setTime(int time) {
         this.time = time;
     }
 
-    public int getTime() { return time; }
+    int getTime() { return time; }
 
-    public Bitmap getBitmap() {
+    Bitmap getBitmap() {
         return bitmap;
     }
 
-    public boolean enabled() {
+    boolean enabled() {
         return enable;
     }
 
-    public void setEnable(boolean enable) { this.enable = enable; }
+    void setEnable(boolean enable) { this.enable = enable; }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 }
