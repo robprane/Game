@@ -8,7 +8,10 @@
     <bool name="splash_enabled">true</bool>
     <integer name="splash_time">3000</integer>
 
-    <integer name="fade_time">400</integer>
-    <integer name="step">20</integer>
+    <!-- Time of fade animations -->
+    <integer name="fade_time">600</integer>
+
+    <!-- Frame rate -->
+    <integer name="frame_rate">100</integer>
 
 </resources>

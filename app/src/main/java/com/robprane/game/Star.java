@@ -32,17 +32,21 @@ public class Star {
         y = generator.nextInt(maxY);
     }
 
-    public void update(int playerSpeed) {
+    public void update(boolean boosting, int playerSpeed) {
         //animating the star horizontally left side
         //by decreasing x coordinate with player speed
-        x -= playerSpeed;
-        x -= speed;
+        if (boosting) {
+            speed += playerSpeed / 10;
+            x -= speed;
+        } else {
+            x -= setSpeed(playerSpeed);
+        }
         //if the star reached the left edge of the screen
         if (x < 0) {
             //again starting the star from right edge
             //this will give a infinite scrolling background effect
-            x = maxX;
             Random generator = new Random();
+            x = maxX + generator.nextInt(maxX / 2);
             y = generator.nextInt(maxY);
             speed = generator.nextInt(10);
         }
@@ -56,6 +60,14 @@ public class Star {
         Random rand = new Random();
         float finalX = rand.nextFloat() * (maxX - minX) + minX;
         return finalX;
+    }
+
+    public float setSpeed(int playerSpeed) {
+        return speed + playerSpeed;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     public int getX() {

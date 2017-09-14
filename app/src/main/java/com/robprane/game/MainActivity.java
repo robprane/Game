@@ -4,25 +4,18 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    //gestures
-    //gestures end
+    // ~~~~~~~~~~ Fullscreen ~~~~~~~~~~
 
-    Player player;
-
-    //fullscreen
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -63,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         super.onPostResume();
         hide();
     }
-    //fullscreen end
 
-    //declaring gameview
+    // ~~~~~~~~~~ Create application ~~~~~~~~~~
+
     private GameView gameView;
 
     @Override
@@ -76,34 +69,59 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getBoolean(R.bool.portrait)) { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); }
         else { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE); }
 
-        //Getting display object
         Display display = getWindowManager().getDefaultDisplay();
 
-        //Getting the screen resolution into point object
         Point size = new Point();
         display.getRealSize(size);
 
-        //Initializing game view object
-        //this time we are also passing the screen size to the GameView constructor
         gameView = new GameView(this, size.x, size.y);
 
-        //adding it to contentview
         setContentView(gameView);
     }
 
-    //pausing the game when activity is paused
+    // ~~~~~~~~~~ Pause and resume application ~~~~~~~~~~
+
     @Override
     protected void onPause() {
         super.onPause();
         gameView.pause();
     }
 
-    //running the game when activity is resumed
     @Override
     protected void onResume() {
         super.onResume();
         gameView.resume();
     }
 
-    //
+    // ~~~~~~~~~~ Pressing back to exit ~~~~~~~~~~
+
+    private boolean exitFlag;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (exitFlag) {
+                finish();
+            }else {
+                Toast.makeText(this,R.string.notice_exit,Toast.LENGTH_SHORT).show();
+                exitFlag = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        exitFlag = false;
+                    }
+                }, 2000);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    // ~~~~~~~~~~ Destroying application ~~~~~~~~~~
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }
