@@ -263,7 +263,7 @@ public class GameView extends SurfaceView implements Runnable {
         long currTime = System.currentTimeMillis();
         if (fpsLastTime != 0) {
             int fps = (int) (1000 / (currTime - fpsLastTime));
-            canvas.drawText(Integer.toString(fps), fpsRect.centerX(), fpsRect.centerY(), fpsPaint);
+            canvas.drawText("fps: " + Integer.toString(fps), fpsRect.centerX(), fpsRect.centerY(), fpsPaint);
         }
         fpsLastTime = currTime;
     }
