@@ -13,5 +13,11 @@
 
     <!-- Frame rate -->
     <integer name="frame_rate">100</integer>
+    
+    <!-- Banner Ad: enabled, position and id -->
+    <bool name="banner_enabled">true</bool>
+    <bool name="banner_position_top">true</bool>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    
 
 </resources>

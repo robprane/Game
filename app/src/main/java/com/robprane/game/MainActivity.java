@@ -10,7 +10,11 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        RelativeLayout layout = new RelativeLayout(this);
+        layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (getResources().getBoolean(R.bool.portrait)) { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); }
         else { setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE); }
@@ -76,7 +83,32 @@ public class MainActivity extends AppCompatActivity {
 
         gameView = new GameView(this, size.x, size.y);
 
-        setContentView(gameView);
+        layout.addView(gameView);
+
+        if (getResources().getBoolean(R.bool.banner_enabled)) {
+
+            AdView adView = new AdView(this);
+            adView.setAdSize(AdSize.SMART_BANNER);
+            adView.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
+
+            AdRequest adRequest = new AdRequest.Builder().addTestDevice("Test").build();
+
+            adView.loadAd(adRequest);
+
+            RelativeLayout.LayoutParams adParams =
+                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+            if (getResources().getBoolean(R.bool.banner_position_top)) {
+                adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            } else {
+                adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            }
+            layout.addView(adView, adParams);
+
+        }
+
+        setContentView(layout);
+
     }
 
     // ~~~~~~~~~~ Pause and resume application ~~~~~~~~~~
@@ -102,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (exitFlag) {
                 finish();
-            }else {
+            } else {
                 Toast.makeText(this,R.string.notice_exit,Toast.LENGTH_SHORT).show();
                 exitFlag = true;
                 new Handler().postDelayed(new Runnable() {
