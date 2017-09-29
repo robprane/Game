@@ -34,6 +34,8 @@ public class GameView extends SurfaceView implements Runnable {
 //    private Bitmap bitmap;
 //    private Bitmap src;
 
+    private Field field;
+
     public GameView(Context context, int screenX, int screenY) {
 
         super(context);
@@ -57,16 +59,18 @@ public class GameView extends SurfaceView implements Runnable {
 
         splash = new Splash(getResources().getBoolean(R.bool.portrait), context, Math.max(screenX, screenY), Math.min(screenX, screenY));
 
-        player = new Player(context, screenX, screenY);
+//        player = new Player(context, screenX, screenY);
+
+        field = new Field(context, screenX, screenY, 2, 2);
 
         surfaceHolder = getHolder();
         paint = new Paint();
 
-        int starNums = 500;
-        for (int i = 0; i < starNums; i++) {
-            Star s = new Star(screenX, screenY);
-            stars.add(s);
-        }
+//        int starNums = 500;
+//        for (int i = 0; i < starNums; i++) {
+//            Star s = new Star(screenX, screenY);
+//            stars.add(s);
+//        }
 
 //        src = BitmapFactory.decodeResource(this.getResources(), R.drawable.brick_tile);
 //        bitmap = Bitmap.createScaledBitmap(src, 300, 300, false);
@@ -116,11 +120,11 @@ public class GameView extends SurfaceView implements Runnable {
             }
         } else { // All about game
             fadein();
-            player.update();
-
-            for (Star s : stars) {
-                s.update(player.getBoosting(), player.getSpeed());
-            }
+//            player.update();
+//
+//            for (Star s : stars) {
+//                s.update(player.getBoosting(), player.getSpeed());
+//            }
         }
     }
 
@@ -169,19 +173,8 @@ public class GameView extends SurfaceView implements Runnable {
                         player.getX(),
                         player.getY(),
                         paint);
-
-//                paint.setColor(Color.argb(255, 119, 61, 66));
-//                canvas.drawRect(0, 0, 300, 300, paint);
-//                canvas.drawRect(300, 300, 600, 600, paint);
-//                paint.setColor(Color.argb(255, 60, 92, 119));
-//                canvas.drawRect(0, 300, 300, 600, paint);
-//                canvas.drawRect(300, 0, 600, 300, paint);
-//                canvas.drawBitmap(bitmap, 0, 0, paint);
-//                canvas.drawBitmap(bitmap, 0, 300, paint);
-//                canvas.drawBitmap(bitmap, 300, 0, paint);
-//                canvas.drawBitmap(bitmap, 300, 300, paint);
-
             }
+//            canvas.drawBitmap(field.getBitmap(), 0, 0, paint);
             drawFps(canvas);
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
@@ -207,6 +200,8 @@ public class GameView extends SurfaceView implements Runnable {
 
     private int lastX = 0;
     private int lastY = 0;
+    private int newX = 0;
+    private int newY = 0;
     private long lastTime;
 
     @Override
@@ -217,13 +212,18 @@ public class GameView extends SurfaceView implements Runnable {
                 lastY = (int) event.getY();
                 lastTime = System.currentTimeMillis();
                 return true;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_MOVE:
                 int x = (int) event.getX();
                 int y = (int) event.getY();
                 int time = (int) (System.currentTimeMillis() - lastTime);
-                float vx = (x - lastX) / (float) time;
-                float vy = (y - lastY) / (float) time;
-                handleTouchEvent(vx, vy, time);
+                return true;
+            case MotionEvent.ACTION_UP:
+//                int x = (int) event.getX();
+//                int y = (int) event.getY();
+//                int time = (int) (System.currentTimeMillis() - lastTime);
+//                float vx = (x - lastX) / (float) time;
+//                float vy = (y - lastY) / (float) time;
+//                handleTouchEvent(vx, vy, time);
                 return true;
         }
         return super.onTouchEvent(event);
@@ -241,10 +241,10 @@ public class GameView extends SurfaceView implements Runnable {
         } else if (absVx > absVy) {
             if (vx > 0) {
                 // Right Swipe
-                player.setBoosting();
+//                player.setBoosting();
             } else {
                 // Left swipe
-                player.stopBoosting();
+//                player.stopBoosting();
             }
         } else if (vy > 0) {
             //Down swipe

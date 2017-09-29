@@ -2,10 +2,12 @@ package com.robprane.game;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
